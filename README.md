@@ -46,11 +46,10 @@ All coin data is fetched from the **[CoinGecko API](https://www.coingecko.com/en
 
 ## ## 🔗 Links
 
-GitHub Repository: https://github.com/Veektorrh/crypto_tracker_app
+GitHub Repository:https://github.com/Veektorrh/NiBit.git
 
-Demo Video: Watch Demo
 
-Direct APK Download: Download APK
+Direct APK Download: https://drive.google.com/file/d/1N_Wi8titj_7JcrQsfhU_jRQlELq49w7C/view?usp=sharing
 
 ---
 
