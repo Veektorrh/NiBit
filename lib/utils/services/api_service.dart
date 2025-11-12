@@ -10,7 +10,7 @@ class ApiService {
   static const String _baseUrl =
       'https://api.coingecko.com/api/v3/coins/markets';
 
-  /// Fetches the top coins from CoinGecko
+  /// Fetch the top coins from CoinGecko
   static Future<List<CoinModel>> fetchCoins() async {
     final url = Uri.parse(
       '$_baseUrl?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=true',

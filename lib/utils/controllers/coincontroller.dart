@@ -9,7 +9,7 @@ class CoinController extends GetxController {
   /// All coins fetched from API
   var coins = <CoinModel>[].obs;
 
-  /// Filtered coins (for search)
+  /// Filtered coins
   var filteredCoins = <CoinModel>[].obs;
 
   /// User favorites

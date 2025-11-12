@@ -47,23 +47,22 @@ All coin data is fetched from the **[CoinGecko API](https://www.coingecko.com/en
 ## ## 🔗 Links
 
 GitHub Repository:https://github.com/Veektorrh/NiBit.git
-
 Demo Video Link: https://drive.google.com/file/d/1QxCYoXYmMz1kPLQFjIr-ZnbQ-dDqrG6e/view?usp=sharing
 Direct APK Download: https://drive.google.com/file/d/1N_Wi8titj_7JcrQsfhU_jRQlELq49w7C/view?usp=sharing
 
 ---
 
-## 🚀 Installation
+##  Installation
 
-1️⃣ Clone the repository
+1 Clone the repository
 
 git clone https://github.com/Veektorrh/NiBit.git
 
 
-2️⃣ Install dependencies
+2 Install dependencies
 flutter pub get
 
-3️⃣ Run the app
+3 Run the app
 flutter run
 
 ⚙️ Notes
@@ -76,7 +75,7 @@ flutter upgrade
 
 Or use:
 
-fl_chart: ^0.66.2
+fl_chart: ^0.63.0
 
 
 ---
