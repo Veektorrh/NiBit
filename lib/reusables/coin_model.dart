@@ -1,12 +1,12 @@
-class Coin {
-  final String name;
-  final String symbol;
-  final double price;
-
-  Coin({required this.name, required this.symbol, required this.price});
-
-
-}
+// class Coin {
+//   final String name;
+//   final String symbol;
+//   final double price;
+//
+//   Coin({required this.name, required this.symbol, required this.price});
+//
+//
+// }
 
 class CoinModel {
   final String id;

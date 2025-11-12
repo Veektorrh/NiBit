@@ -8,6 +8,7 @@ import 'package:nibit/utils/controllers/stream_controller.dart';
 import '../reusables/balancecards.dart';
 import '../reusables/coin_model.dart';
 import '../reusables/stylings.dart';
+import 'coindetails_page.dart';
 // import '../services/api_service.dart';
 // import '../services/coin_stream.dart';
 
@@ -23,6 +24,24 @@ class _HomePageState extends State<HomePage> {
 
   final StreamController controller = Get.put(
       StreamController(), permanent: true);
+
+  bool _showNetworkError = false;
+  @override
+  void initState() {
+    super.initState();
+
+    // Start a 5-second timer when page loads
+    Future.delayed(const Duration(seconds: 15), () {
+      // Only show error if still loading
+      if (mounted && !_hasData) {
+        setState(() {
+          _showNetworkError = true;
+        });
+      }
+    });
+  }
+
+  bool get _hasData => controller.cachedCoins != null && controller.cachedCoins!.isNotEmpty;
 
   // late Future<List<CoinModel>> _coinsFuture;
   // List<CoinModel>? _cachedCoins;
@@ -215,6 +234,7 @@ class _HomePageState extends State<HomePage> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // Save latest data to cache
+                          _showNetworkError = false;
                           controller.cachedCoins.assignAll(snapshot.data!);
                           return Obx(() =>
                               ListView.builder(
@@ -226,6 +246,10 @@ class _HomePageState extends State<HomePage> {
                                       .green : Colors.red;
 
                                   return ListTile(
+                                    onTap: () {
+                                      Get.to(() => CoinDetailsPage(coin: coin));
+                                    },
+
                                     leading: CircleAvatar(
                                       backgroundImage: NetworkImage(coin.image),
                                       radius: 22,
@@ -280,6 +304,9 @@ class _HomePageState extends State<HomePage> {
                                       .green : Colors.red;
 
                                   return ListTile(
+                                    onTap: () {
+                                      Get.to(() => CoinDetailsPage(coin: coin));
+                                    },
                                     leading: CircleAvatar(
                                       backgroundImage: NetworkImage(coin.image),
                                       radius: 22,
@@ -327,7 +354,7 @@ class _HomePageState extends State<HomePage> {
                             return Column(
                               children: [
                                 _buildBanner(
-                                    "Network error — showing cached data"),
+                                    "Network error — Reload to update"),
                                 Expanded(
                                   child: ListView.builder(
                                     itemCount: controller.cachedCoins.length,
@@ -340,6 +367,9 @@ class _HomePageState extends State<HomePage> {
                                           : Colors.red;
 
                                       return ListTile(
+                                        onTap: () {
+                                          Get.to(() => CoinDetailsPage(coin: coin));
+                                        },
                                         leading: CircleAvatar(
                                           backgroundImage: NetworkImage(
                                               coin.image),
@@ -505,7 +535,26 @@ class _HomePageState extends State<HomePage> {
                           return const Center(child: Text(
                               'Failed to load data'));
                         }
-                        return const Center(child: CircularProgressIndicator());
+                        return Center(child:
+                        Column(
+                          children: [
+                            const CircularProgressIndicator(color: Colors.amber,),
+                            const SizedBox(height: 16),
+                            if (_showNetworkError)
+                            Container(
+                              // color: Colors.amber.withOpacity(0.2),
+                              child: Center(
+                                child: const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.crisis_alert, color:Colors.amber),
+                                    Text('Network error. Reconnecting now ...', style: TextStyle(fontFamily: 'Inter', color: Colors.amber, fontWeight: FontWeight.w900),),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ));
                       },
 
                     )

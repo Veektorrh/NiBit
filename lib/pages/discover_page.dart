@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nibit/pages/favorites_page.dart';
 import 'package:nibit/utils/controllers/coincontroller.dart';
+
+import 'coindetails_page.dart';
 // import 'package:nibit/utils/reusables/coin_model.dart';
 
 // import '../utils/reusables/stylings.dart';
@@ -40,6 +42,23 @@ class _DiscoverPageState extends State<DiscoverPage> {
   //
   //   setState(() => filteredCoins = results);
   // }
+  bool _showNetworkError = false;
+  @override
+  void initState() {
+    super.initState();
+
+    // Start a 5-second timer when page loads
+    Future.delayed(const Duration(seconds: 15), () {
+      // Only show error if still loading
+      if (mounted && !_hasData) {
+        setState(() {
+          _showNetworkError = true;
+        });
+      }
+    });
+  }
+
+  bool get _hasData => controller.filteredCoins != null && controller.filteredCoins!.isNotEmpty;
   final CoinController controller = Get.put(CoinController());
 
   @override
@@ -94,7 +113,23 @@ class _DiscoverPageState extends State<DiscoverPage> {
               Expanded(
                 child: Obx((){
                   if (controller.isLoading.value) {
-                    return const Center(child: CircularProgressIndicator());
+                    return Center(child:  Column(
+                      children: [
+                        const CircularProgressIndicator(),
+                        const SizedBox(height: 16),
+                        if (_showNetworkError)
+                    Container(
+                        // color: Colors.amber.withOpacity(0.2),
+                        child: Center(
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.crisis_alert, color:Colors.amber),
+                                Text('Network error. Reconnecting now ...', style: TextStyle(fontFamily: 'Inter', color: Colors.amber, fontWeight: FontWeight.w900),),
+                      ],
+                    )
+                        ))
+                    ]));
                   }
 
                   if (controller.errorMessage.isNotEmpty) {
@@ -111,7 +146,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   if (controller.filteredCoins.isEmpty) {
                     return const Center(child: Text('No coins found'));
                   }
-
+                  _showNetworkError = true;
                   return RefreshIndicator(
                       onRefresh: controller.refreshCoins,
                       child: Container(
@@ -128,6 +163,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                           itemBuilder: (context, index) {
                             final coin = controller.filteredCoins[index];
                             final isFav = controller.isFav(coin);
+                            final priceChangeColor =
+                            coin.priceChangePercentage24h >= 0
+                                ? Colors.green
+                                : Colors.red;
+
                             // return
                             //   ListView.builder(
                             // itemCount: controller.filteredCoins.length,
@@ -135,23 +175,26 @@ class _DiscoverPageState extends State<DiscoverPage> {
                             //   final coin = controller.filteredCoins[index];
                             return
                               ListTile(
+                                  onTap: (){
+                                    Get.to(() => CoinDetailsPage(coin: coin));
+                                  },
                                   leading: GestureDetector(
-                                    onTap: (){
-                                      controller.addAsset(coin);
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(
-                                            controller.isAsset(coin)
-                                                ? '✅ Added to Assets'
-                                                : '❌ Removed from Assets',
-                                          ),
-                                          backgroundColor: controller.isAsset(coin) ? Colors.green.shade500 : Colors.red.withOpacity(0.5),
-                                          behavior: SnackBarBehavior.floating,
-                                          margin: const EdgeInsets.all(12),
-                                          duration: const Duration(seconds: 2),
-                                        ),
-                                      );
-                                      },
+                                    // onTap: (){
+                                    //   controller.addAsset(coin);
+                                    //   ScaffoldMessenger.of(context).showSnackBar(
+                                    //     SnackBar(
+                                    //       content: Text(
+                                    //         controller.isAsset(coin)
+                                    //             ? '✅ Added to Assets'
+                                    //             : '❌ Removed from Assets',
+                                    //       ),
+                                    //       backgroundColor: controller.isAsset(coin) ? Colors.green.shade500 : Colors.red.withOpacity(0.5),
+                                    //       behavior: SnackBarBehavior.floating,
+                                    //       margin: const EdgeInsets.all(12),
+                                    //       duration: const Duration(seconds: 2),
+                                    //     ),
+                                    //   );
+                                    //   },
                                     child: CircleAvatar(
                                       backgroundImage: NetworkImage(coin.image),
                                       backgroundColor: Colors.transparent,
@@ -162,20 +205,31 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                     children: [
                                       Text(
                                         coin.name,
-                                        style: const TextStyle(
+                                        style: const TextStyle(fontFamily: 'Inter',
                                             fontWeight: FontWeight.w600),
                                       ),
                                       Text(
                                         '\$${coin.currentPrice.toStringAsFixed(2)}',
-                                        style: const TextStyle(
-                                            color: Colors.green,
+                                        style: const TextStyle(fontFamily: 'Inter',
+                                            color: Colors.black,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                  subtitle: Text(
-                                    coin.symbol.toUpperCase(),
-                                    style: const TextStyle(color: Colors.grey),
+                                  subtitle: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        coin.symbol.toUpperCase(),
+                                        style: const TextStyle(fontFamily: 'Inter',color: Colors.grey),
+                                      ),
+                                      Text(
+                                        '${coin.priceChangePercentage24h
+                                            .toStringAsFixed(2)}%',
+                                        style: TextStyle(fontFamily: 'Inter',
+                                            color: priceChangeColor),
+                                      ),
+                                    ],
                                   ),
                                   trailing:
                                   Obx(()  {

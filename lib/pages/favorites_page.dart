@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:nibit/pages/discover_page.dart';
 import 'package:nibit/utils/controllers/coincontroller.dart';
 
+import 'coindetails_page.dart';
+
 class FavoritesPage extends StatefulWidget {
   const FavoritesPage({super.key});
 
@@ -39,6 +41,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                 final priceChangeColor =
                 coin.priceChangePercentage24h >= 0 ? Colors.green : Colors.red;
                 return ListTile(
+                  onTap: (){
+                    Get.to(() => CoinDetailsPage(coin: coin));
+                  },
                   leading: CircleAvatar(
                     backgroundImage: NetworkImage(coin.image),
                     backgroundColor: Colors.transparent,
