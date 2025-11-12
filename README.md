@@ -48,7 +48,7 @@ All coin data is fetched from the **[CoinGecko API](https://www.coingecko.com/en
 
 GitHub Repository:https://github.com/Veektorrh/NiBit.git
 
-
+Demo Video Link: https://drive.google.com/file/d/1QxCYoXYmMz1kPLQFjIr-ZnbQ-dDqrG6e/view?usp=sharing
 Direct APK Download: https://drive.google.com/file/d/1N_Wi8titj_7JcrQsfhU_jRQlELq49w7C/view?usp=sharing
 
 ---
