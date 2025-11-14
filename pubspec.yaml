@@ -33,6 +33,9 @@ dependencies:
   get:
   animated_text_kit: ^4.2.2
   http: ^1.2.2
+  hive:
+  hive_flutter:
+  path_provider:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

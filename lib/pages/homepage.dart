@@ -22,7 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
-  final StreamController controller = Get.put(
+  final StreamController streamController = Get.put(
       StreamController(), permanent: true);
 
   bool _showNetworkError = false;
@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  bool get _hasData => controller.cachedCoins != null && controller.cachedCoins!.isNotEmpty;
+  bool get _hasData => streamController.cachedCoins != null && streamController.cachedCoins!.isNotEmpty;
 
   // late Future<List<CoinModel>> _coinsFuture;
   // List<CoinModel>? _cachedCoins;
@@ -229,18 +229,18 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child:
                     StreamBuilder<List<CoinModel>>(
-                      key: ValueKey(controller.refreshTrigger.value),
-                      stream: controller.coinStream,
+                      key: ValueKey(streamController.refreshTrigger.value),
+                      stream: streamController.coinStream,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           // Save latest data to cache
                           _showNetworkError = false;
-                          controller.cachedCoins.assignAll(snapshot.data!);
+                          streamController.cachedCoins.assignAll(snapshot.data!);
                           return Obx(() =>
                               ListView.builder(
-                                itemCount: controller.cachedCoins.length,
+                                itemCount: streamController.cachedCoins.length,
                                 itemBuilder: (context, index) {
-                                  final coin = controller.cachedCoins[index];
+                                  final coin = streamController.cachedCoins[index];
                                   final priceChangeColor =
                                   coin.priceChangePercentage24h >= 0 ? Colors
                                       .green : Colors.red;
@@ -292,13 +292,13 @@ class _HomePageState extends State<HomePage> {
 
                         if (snapshot.connectionState ==
                             ConnectionState.waiting &&
-                            controller.cachedCoins.isNotEmpty) {
+                            streamController.cachedCoins.isNotEmpty) {
                           // If we have cached data, show it while waiting
                           return Obx(() =>
                               ListView.builder(
-                                itemCount: controller.cachedCoins.length,
+                                itemCount: streamController.cachedCoins.length,
                                 itemBuilder: (context, index) {
-                                  final coin = controller.cachedCoins[index];
+                                  final coin = streamController.cachedCoins[index];
                                   final priceChangeColor =
                                   coin.priceChangePercentage24h >= 0 ? Colors
                                       .green : Colors.red;
@@ -349,17 +349,17 @@ class _HomePageState extends State<HomePage> {
                         if (snapshot.hasError) {
                           // debugPrint('Stream error: ${snapshot.error}');
 
-                          if (controller.cachedCoins.isNotEmpty) {
+                          if (streamController.cachedCoins.isNotEmpty) {
                             // show cached coins with banner
                             return Column(
                               children: [
                                 _buildBanner(
-                                    "Network error — Reload to update"),
+                                    "Offline mode — Reload to update"),
                                 Expanded(
                                   child: ListView.builder(
-                                    itemCount: controller.cachedCoins.length,
+                                    itemCount: streamController.cachedCoins.length,
                                     itemBuilder: (context, index) {
-                                      final coin = controller
+                                      final coin = streamController
                                           .cachedCoins[index];
                                       final priceChangeColor =
                                       coin.priceChangePercentage24h >= 0
@@ -418,11 +418,11 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text("Failed to load data",
+                                  Text("Network Error, Failed to load data",
                                       style: TextStyle(color: Colors.grey)),
                                   const SizedBox(height: 8),
                                   ElevatedButton(
-                                    onPressed: controller.refreshCoins,
+                                    onPressed: streamController.refreshCoins,
                                     child: const Text("Retry"),
                                   )
                                 ],
@@ -652,7 +652,7 @@ class _HomePageState extends State<HomePage> {
               fontWeight: FontWeight.w600, color: Colors.black)),
           SizedBox(width: 6),
           IconButton(
-              onPressed: controller.refreshCoins,
+              onPressed: streamController.refreshCoins,
               icon: Icon(Icons.refresh)),
         ],
       ),
